@@ -1,4 +1,5 @@
 import "~/styles/globals.css";
+import "@uploadthing/react/styles.css";
 
 import { GeistSans } from "geist/font/sans";
 import {
@@ -8,28 +9,16 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import { TopNav } from "./_components/topnav";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "./api/uploadthing/core";
 
 export const metadata = {
   title: "T3 Gallery",
   description: "Test Project",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
-
-export function TopNav() {
-  return (
-    <nav className="flex w-full items-center justify-between border-b p-4 text-xl font-semibold">
-      <div className="">Gallery</div>
-      <div>
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-      </div>
-    </nav>
-  );
-}
 
 export default function RootLayout({
   children,
@@ -44,6 +33,7 @@ export default function RootLayout({
           {children}
         </body>
       </html>
+      <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
     </ClerkProvider>
   );
 }

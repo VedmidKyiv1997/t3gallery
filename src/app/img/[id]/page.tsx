@@ -1,16 +1,12 @@
-import { getUserImage } from "../../../server/queries";
+import FullPageImageView from "../../../components/full-image-page";
 
-export default async function PhotoPage({
+export default function PhotoPage({
   params: { id: photoId },
 }: {
   params: { id: string };
 }) {
   const idAsNumber = Number(photoId);
   if (isNaN(idAsNumber)) throw new Error("Invalid photo id");
-  const image = await getUserImage(Number(photoId));
-  return (
-    <div>
-      <img src={image.url} className="w-96" />
-    </div>
-  );
+
+  return <FullPageImageView photoId={idAsNumber} />;
 }

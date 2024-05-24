@@ -7,6 +7,7 @@ import { TopNav } from "./_components/topnav";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
+import React from "react";
 
 export const metadata = {
   title: "T3 Gallery",
@@ -16,8 +17,10 @@ export const metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   return (
     <ClerkProvider>
@@ -25,6 +28,8 @@ export default function RootLayout({
         <body className="flex flex-col gap-4">
           <TopNav />
           {children}
+          {modal}
+          <div id="modal-root" />
         </body>
       </html>
       <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />

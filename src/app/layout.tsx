@@ -27,18 +27,18 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <CSPostHogProvider>
-        <html lang="en" className={`${GeistSans.variable} dark`}>
-          <body>
-            <div className="grid h-screen grid-rows-[auto_1fr] ">
-              <TopNav />
-              <main className="overflow-y-scroll">{children}</main>
-              {modal}
-            </div>
-            <div id="modal-root" />
-            <Toaster />
-          </body>
-        </html>
+      <html lang="en" className={`${GeistSans.variable} dark`}>
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+        <body>
+          <div className="grid h-screen grid-rows-[auto_1fr] ">
+            <TopNav />
+            <main className="overflow-y-scroll">{children}</main>
+            {modal}
+          </div>
+          <div id="modal-root" />
+          <Toaster />
+        </body>
+      </html>
       </CSPostHogProvider>
     </ClerkProvider>
   );

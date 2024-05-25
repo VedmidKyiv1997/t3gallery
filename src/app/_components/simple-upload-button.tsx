@@ -69,7 +69,7 @@ function LoadingSpinnerSvg() {
   );
 }
 
-export default function SimpleUploadButton() {
+export function SimpleUploadButton() {
   const router = useRouter();
   const postHog = usePostHog();
   const { inputProps } = useUploadThingInputProps("imageUploader", {

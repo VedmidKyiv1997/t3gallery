@@ -1,6 +1,10 @@
 import "server-only";
 import { db } from "./db";
 import { auth } from "@clerk/nextjs/server";
+import { and, eq } from "drizzle-orm";
+import { images } from "./db/schema";
+import { redirect } from "next/navigation";
+import analyticsServerClient from "./analytics";
 
 function getUser() {
   const user = auth();
@@ -30,4 +34,22 @@ export async function getUserImage(id: number) {
   if (!image) throw new Error("Image not found");
 
   return image;
+}
+
+export async function deleteUserImage(id: number) {
+  const user = getUser();
+
+  await db
+    .delete(images)
+    .where(and(eq(images.id, id), eq(images.userId, user.userId)));
+
+  analyticsServerClient.capture({
+    distinctId: user.userId,
+    event: "delete-image",
+    properties: {
+      image_id: id,
+    },
+  });
+
+  redirect("/");
 }

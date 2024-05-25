@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 import { useUploadThing } from "../../utils";
 import { toast } from "sonner";
+import { usePostHog } from "posthog-js/react";
 
 // inferred input off useUploadThing
 type Input = Parameters<typeof useUploadThing>;
@@ -15,7 +16,6 @@ const useUploadThingInputProps = (...args: Input) => {
     const result = await $ut.startUpload(selectedFiles);
 
     console.log("uploaded files", result);
-    // TODO: persist result in state maybe?
   };
 
   return {
@@ -69,22 +69,12 @@ function LoadingSpinnerSvg() {
   );
 }
 
-// function getToasty() {
-//   toast(
-//     <div className="flex w-full justify-between text-white">
-//       Uploading...
-//       <LoadingSpinnerSvg />
-//     </div>,
-//     { duration: 100000, id: "upload-begin" },
-//   );
-// }
-
-// window.xxx = getToasty;
-
 export default function SimpleUploadButton() {
   const router = useRouter();
+  const postHog = usePostHog();
   const { inputProps } = useUploadThingInputProps("imageUploader", {
     onUploadBegin() {
+      postHog.capture("upload-begin");
       toast(
         <div className="flex w-full justify-between text-white">
           Uploading...
@@ -94,9 +84,15 @@ export default function SimpleUploadButton() {
       );
     },
     onClientUploadComplete() {
+      postHog.capture("upload-complete");
       toast.dismiss("upload-begin");
       toast("Upload complete!");
       router.refresh();
+    },
+    onUploadError(error) {
+      postHog.capture("upload-error", { error });
+      toast.dismiss("upload-begin");
+      toast("Upload failed😥");
     },
   });
 
